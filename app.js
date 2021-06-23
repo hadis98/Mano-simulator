@@ -58,14 +58,15 @@ function firstStep() {
 function secondStep() {
     LC = 0;
     results_index = 0;
+    for (let i = 0; i < results.length; i++) {
+        scanEveryLine_second();
+    }
 }
 
 // this function scans every line of codes in editor
 function scanEveryLine_first() {
     let ith_line = results[results_index]; // ith line of results in string
     let results_contents = results[results_index].split(/[ ,]+/);
-    // console.log(results_contents); //'a' 'b'
-    // console.log('ithLine: ', ith_line);
     if (!ith_line.includes(",")) {
         //dont have label:
         if (ith_line.includes("ORG")) {
@@ -80,7 +81,6 @@ function scanEveryLine_first() {
         }
     } else {
         const symbol = results_contents[0];
-        // console.log(symbol);
         labels_table[symbol] = LC;
         LC++;
     }
@@ -103,21 +103,56 @@ function scanEveryLine_second() {
             console.log('end of program');
             // end of program
         } else if (ith_line.includes("HEX")) {
-
+            if (results_contents[0] === 'HEX') {
+                memory_table[LC] = writeHexNum(results_contents[1]);
+            } else if (results_contents[1] === 'HEX') {
+                memory_table[LC] = writeHexNum(results_contents[2]);
+            }
+            LC++;
         } else if (ith_line.includes("DEC")) {
-
+            if (results_contents[0] === 'DEC') {
+                memory_table[LC] = DecToHex(results_contents[1]);
+            } else if (results_contents[1] === 'DEC') {
+                memory_table[LC] = DecToHex(results_contents[2]);
+            }
+            LC++;
         }
     } else {
         // if it is memory refrence:
         let target = results_contents[0];
         if (search_in_object(memory_instructions, target)) {
+            // if it is memory instruction:
+            // format: instruction label or format: instruction label I
+            let opcode; //x
+            if (results_contents.includes('I')) {
+                opcode = memory_instructions[target][1]; //x
+            } else {
+                opcode = memory_instructions[target][0]; //x
+            }
+            let address;
+            let variable = results_contents[1];
+            address = labels_table[variable]; //xxx
+            let full_address = opcode.toString() + address.toString();
+            console.log(opcode, address, full_address);
+            memory_table[LC] = full_address;
+            LC++;
 
         } else if (search_in_object(register_instructions, target)) {
+            let opcode = register_instructions[target];
+            memory_table[LC] = opcode;
+            LC++;
 
         } else if (search_in_object(IO_instructions, target)) {
-
+            let opcode = IO_instructions[target];
+            memory_table[LC] = opcode;
+            LC++;
+        } else {
+            console.log('waaaaaaaaaaarning!!!! in line: ' + LC + ' of memory');
+            console.log('instruction doesnt exist');
+            LC++;
         }
     }
+    results_index++;
 }
 
 // get contents of editor
@@ -129,12 +164,64 @@ assemblerBtn.addEventListener("click", () => {
     console.log(editor_contents);
     console.log(results);
     firstStep();
-    // secondStep();
+    secondStep();
     console.log(labels_table);
+    console.log(memory_table);
 });
 
-/**
 
+function search_in_object(object, target) {
+    for (let i = 0; i < Object.keys(object).length; i++) {
+        if (object[target]) {
+            return object[target];
+        }
+    }
+    return 0;
+}
+
+function DecToHex(decimal) { // Data (decimal)
+
+    length = -1; // Base string length
+    string = ''; // Source 'string'
+
+    characters = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F']; // character array
+
+    do { // Grab each nibble in reverse order because JavaScript has no unsigned left shift
+
+        string += characters[decimal & 0xF]; // Mask byte, get that character
+        ++length; // Increment to length of string
+
+    } while (decimal >>>= 4); // For next character shift right 4 bits, or break on 0
+
+    decimal += 'x'; // Convert that 0 into a hex prefix string -> '0x'
+
+    do
+        decimal += string[length];
+    while (length--); // Flip string forwards, with the prefixed '0x'
+    if (decimal.slice(2).length > 4) {
+        decimal = decimal.split('').slice(-4).join('');
+    } else if (decimal.slice(2).length <= 4) {
+        let number_of_zero = '';
+        for (let i = 0; i < 4 - decimal.slice(2).length; i++) {
+            number_of_zero += '0';
+        }
+        decimal = decimal.split('').slice(-decimal.slice(2).length).join('');
+        decimal = number_of_zero + decimal;
+    }
+    return (decimal); // return (hexadecimal);
+}
+
+function writeHexNum(number) {
+    if (number.length <= 4) {
+        let number_of_zero = '';
+        for (let i = 0; i < 4 - number.length; i++) {
+            number_of_zero += '0';
+        }
+        return number = number_of_zero + number;
+    }
+}
+
+/**
 ORG 100
 LDA SUB
 CMA
@@ -146,17 +233,4 @@ MIN, DEC 83
 SUB, DEC -23
 DIF, HEX 0
 END
-
  */
-
-
-function search_in_object(object, target) {
-    for (let i = 0; i < Object.keys(object).length; i++) {
-        if (object[target]) {
-            return 1;
-        }
-    }
-    return 0;
-}
-
-// console.log(search_in_object(memory_instructions, 'ADD'));
