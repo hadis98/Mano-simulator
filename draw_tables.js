@@ -46,7 +46,7 @@ for (let i = 0; i < 4097; i++) {
             column.innerText = i;
             column.classList.add('bold-text');
         } else if (j == 1) {
-            column.innerText = DecToHex(i);
+            column.innerText = DecToHex_address(i);
             column.classList.add('bold-text');
         }
 
@@ -68,8 +68,8 @@ function updateContentsColumn() {
     const columns = table.getElementsByTagName('td');
     let counter = startAddress;
     for (let i = parseInt('0x' + startAddress); i < parseInt('0x' + startAddress) + numberOfAddress; i++) {
-        columns[i * 3 + 2].innerText = memory_table[counter];
-        counter++;
+        columns[i * 3 + 2].innerText = memory_table_contents[counter];
+        counter = addHexNumbers(counter, '1');
     }
     scrollToRow(parseInt('0x' + startAddress));
 }

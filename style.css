@@ -79,17 +79,13 @@ button {
     width: 100%;
     padding: 0.4rem;
     font-size: 0.9rem;
-    /* color: #0f9765; */
-    /* color: #017A79; */
     color: #003233e9;
     border: 2px solid #014D4E;
-    /* border: 0; */
 }
 
 .memory-table {
     width: 20%;
     font-size: 0.8rem;
-    /* background-color: #014D4E; */
 }
 
 .memory-table p {

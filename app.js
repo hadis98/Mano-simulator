@@ -56,7 +56,8 @@ let numberOfAddress = 0;
 let startAddress = 0;
 // console.log(registers);
 const labels_table = {};
-const memory_table = {};
+const memory_table_contents = {};
+const memory_table_address = {};
 const assemblerBtn = document.getElementById("assemblerBtn");
 let editor_contents;
 let results;
@@ -64,7 +65,7 @@ let results_index = 0;
 // firt level of simulations:
 
 // line counter
-let LC = 0;
+let LC = '0x0';
 
 // in this function we calculate label_table and check every line of codes in editor
 function firstStep() {
@@ -74,7 +75,7 @@ function firstStep() {
 }
 
 function secondStep() {
-    LC = 0;
+    LC = '0x0';
     results_index = 0;
     for (let i = 0; i < results.length; i++) {
         scanEveryLine_second();
@@ -88,19 +89,23 @@ function scanEveryLine_first() {
     if (!ith_line.includes(",")) {
         //dont have label:
         if (ith_line.includes("ORG")) {
-            LC = parseInt(results_contents[1]);
+            LC = writeHexNum(results_contents[1]);
+            // LC = parseInt(results_contents[1]);
             console.log("lc: ", LC);
         } else {
             if (ith_line.includes("END")) {
                 // start second step
             } else {
-                LC++;
+                LC = addHexNumbers(LC, '1');
+                console.log("lc: ", LC);
             }
         }
     } else {
         const symbol = results_contents[0];
+        console.log("lc: ", LC);
         labels_table[symbol] = LC;
-        LC++;
+        LC = addHexNumbers(LC, '1');
+        console.log("lc: ", LC);
     }
 
     results_index++; //be ready to scan next line
@@ -116,27 +121,40 @@ function scanEveryLine_second() {
         ith_line.includes("DEC")
     ) {
         if (ith_line.includes("ORG")) {
-            LC = parseInt(results_contents[1]);
+            // LC = parseInt(results_contents[1]);
+            LC = writeHexNum(results_contents[1]);
+            console.log("lc: ", LC);
             startAddress = LC;
-            PC.value = parseInt(results_contents[1]);
+            PC = parseInt(results_contents[1]);
         } else if (ith_line.includes("END")) {
             console.log('end of program');
             // end of program
         } else if (ith_line.includes("HEX")) {
             if (results_contents[0] === 'HEX') {
-                memory_table[LC] = writeHexNum(results_contents[1]);
+                memory_table_contents[LC] = writeHexNum(results_contents[1]);
+                console.log(memory_table_contents[LC]);
+                // memory_table_address[LC] = writeHexNum(results_contents[1]);
             } else if (results_contents[1] === 'HEX') {
-                memory_table[LC] = writeHexNum(results_contents[2]);
+                memory_table_contents[LC] = writeHexNum(results_contents[2]);
+                console.log(memory_table_contents[LC]);
+                // memory_table_address[LC] = writeHexNum(results_contents[2]);
             }
-            LC++;
+
+            LC = addHexNumbers(LC, '1');
+            console.log("lc: ", LC);
             numberOfAddress++;
         } else if (ith_line.includes("DEC")) {
             if (results_contents[0] === 'DEC') {
-                memory_table[LC] = DecToHex(results_contents[1]);
+                memory_table_contents[LC] = DecToHex_contents(results_contents[1]);
+                console.log(memory_table_contents[LC])
+                    // memory_table_address[LC] = DecToHex_address(results_contents[1]);
             } else if (results_contents[1] === 'DEC') {
-                memory_table[LC] = DecToHex(results_contents[2]);
+                memory_table_contents[LC] = DecToHex_contents(results_contents[2]);
+                console.log(memory_table_contents[LC])
+                    // memory_table_address[LC] = DecToHex_address(results_contents[2]);
             }
-            LC++;
+            LC = addHexNumbers(LC, '1');
+            console.log("lc: ", LC);
             numberOfAddress++;
         }
     } else {
@@ -148,56 +166,47 @@ function scanEveryLine_second() {
             let opcode; //x
             if (results_contents.includes('I')) {
                 opcode = memory_instructions[target][1]; //x
+                console.log(opcode);
             } else {
                 opcode = memory_instructions[target][0]; //x
+                console.log(opcode);
             }
             let address;
             let variable = results_contents[1];
+            console.log(variable);
             address = labels_table[variable]; //xxx
-            let full_address = opcode.toString() + address.toString();
+            console.log(addHexNumbers(opcode.toString(), address.toString()));
+            // let full_address = opcode.toString() + address.toString();
+            let full_address = addHexNumbers(opcode.toString(), address.toString());
             console.log(opcode, address, full_address);
-            memory_table[LC] = full_address;
-            LC++;
+            memory_table_contents[LC] = full_address;
+            LC = addHexNumbers(LC, '1');
+            console.log("lc: ", LC);
             numberOfAddress++;
 
         } else if (search_in_object(register_instructions, target)) {
             let opcode = register_instructions[target];
-            memory_table[LC] = opcode;
-            LC++;
+            memory_table_contents[LC] = opcode;
+            LC = addHexNumbers(LC, '1');
             numberOfAddress++;
+            console.log("lc: ", LC);
 
         } else if (search_in_object(IO_instructions, target)) {
             let opcode = IO_instructions[target];
-            memory_table[LC] = opcode;
-            LC++;
+            memory_table_contents[LC] = opcode;
+            LC = addHexNumbers(LC, '1');
             numberOfAddress++;
+            console.log("lc: ", LC);
         } else {
             console.log('waaaaaaaaaaarning!!!! in line: ' + LC + ' of memory');
             console.log('instruction doesnt exist');
-            LC++;
+            LC = addHexNumbers(LC, '1');
+            console.log("lc: ", LC);
             numberOfAddress++;
         }
     }
     results_index++;
 }
-
-// get contents of editor
-// click on assemble button
-assemblerBtn.addEventListener("click", () => {
-    const strings = document.getElementById("editor").value;
-    editor_contents = strings;
-    results = editor_contents.split("\n");
-    console.log(editor_contents);
-    console.log(results);
-    firstStep();
-    secondStep();
-    console.log(labels_table);
-    console.log(memory_table);
-    updateContentsColumn();
-    assemblerBtn.disabled = true;
-    assemblerBtn.style.backgroundColor = 'rgb(4, 153, 153)';
-});
-
 
 function search_in_object(object, target) {
     for (let i = 0; i < Object.keys(object).length; i++) {
@@ -227,17 +236,45 @@ function DecToHex(decimal) { // Data (decimal)
     do
         decimal += string[length];
     while (length--); // Flip string forwards, with the prefixed '0x'
-    if (decimal.slice(2).length > 4) {
-        decimal = decimal.split('').slice(-4).join('');
-    } else if (decimal.slice(2).length <= 4) {
+
+    return decimal; // return (hexadecimal);
+}
+
+function DecToHex_address(decimal) {
+    let hex = DecToHex(decimal);
+    let result;
+    if (hex.length < 5) {
+        let addedArr = [];
+        for (let i = 0; i < 5 - hex.length; i++) {
+            addedArr.push("0");
+        }
+        let arr = hex.split('');
+        arr.splice(2, 0, ...addedArr);
+        result = arr.join('');
+        hex = result;
+    }
+    if (hex.length > 5) {
+        hex = hex.split('').slice(-4).join('');
+    }
+    return hex;
+
+}
+
+function DecToHex_contents(number) {
+    let hex = DecToHex(number);
+    if (hex.length > 4) {
+        hex = hex.split('').slice(-4).join('');
+    } else if (hex.slice(2).length <= 4) {
         let number_of_zero = '';
-        for (let i = 0; i < 4 - decimal.slice(2).length; i++) {
+        for (let i = 0; i < 4 - hex.slice(2).length; i++) {
             number_of_zero += '0';
         }
-        decimal = decimal.split('').slice(-decimal.slice(2).length).join('');
-        decimal = number_of_zero + decimal;
+        hex = hex.split('').slice(-hex.slice(2).length).join('');
+        hex = number_of_zero + hex;
     }
-    return (decimal); // return (hexadecimal);
+    console.log('DecToHex_contents', number, hex);
+    return hex;
+
 }
 
 function writeHexNum(number) {
@@ -249,3 +286,33 @@ function writeHexNum(number) {
         return number = number_of_zero + number;
     }
 }
+
+function setHexFormat(number) {
+    return number = '0x'.concat(number);
+}
+
+function addHexNumbers(c1, c2) {
+    var hexStr = (parseInt(c1, 16) + parseInt(c2, 16)).toString(16).toUpperCase();
+    while (hexStr.length < 4) { hexStr = '0' + hexStr; } // Zero pad.
+    return hexStr;
+}
+
+function start_assemble() {
+    const strings = document.getElementById("editor").value;
+    editor_contents = strings;
+    results = editor_contents.split("\n");
+    console.log(editor_contents);
+    console.log(results);
+    firstStep();
+    secondStep();
+    console.log(labels_table);
+    console.log(memory_table_address);
+    console.log(memory_table_contents);
+    updateContentsColumn();
+    assemblerBtn.disabled = true;
+    assemblerBtn.style.backgroundColor = 'rgb(4, 153, 153)';
+}
+
+// get contents of editor
+// click on assemble button
+assemblerBtn.addEventListener("click", start_assemble);
