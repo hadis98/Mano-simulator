@@ -2,20 +2,54 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <link rel="icon shortcut" href="images/binary-code (3).png">
+    <link href="https://fonts.googleapis.com/css2?family=Pangolin&display=swap" rel="stylesheet">
     <title>Mano Simulator</title>
     <script src="app.js" defer></script>
+    <script src="instructions.js" defer></script>
+    <script src="draw_tables.js" defer></script>
 </head>
 
 <body>
+    <div class="program-info">
+        <h1 class="info-header">MANO SIMULATOR</h1>
+        <button id="helpBtn">Help</button>
+        <button id="resetBtn">Reset</button>
+    </div>
     <div class="container">
         <div class="editor">
-            <textarea name="editor" id="editor" cols="60" rows="20"></textarea>
-            <button id="assemblerBtn">assemble</button>
+            <p id="editor-header">Code Editor</p>
+            <textarea name="editor" id="editor" rows="26" spellcheck="false"></textarea>
+            <div class="assembler">
+                <button class="button" id="assemblerBtn"><img src="images/processing.png" alt="">Assemble</button>
+            </div>
+        </div>
+
+        <div class="instruction-table__container">
+            <div class="instruction-table">
+                <p id="instruction-header">Instructions Detail</p>
+
+            </div>
+            <div class="controlUintButtons">
+                <button class="button" id="fetchBtn"><img src="images/automation.png" alt="">Fetch</button>
+                <button class="button" id="decodeBtn"><img src="images/decode.png" alt="">Decode</button>
+                <button class="button" id="executeBtn"><img src="images/execution.png" alt="">Execute</button>
+            </div>
+            <!-- <div class="instruction-infos">
+                +Lorem ipsum dolor sit amet consectetur, adipisicing elit. Qui perferendis animi repellat, id vero non pariatur sapiente quasi autem iure ratione voluptate, quibusdam natus temporibus fugiat voluptatum maiores porro modi.
+            </div> -->
+        </div>
+        <div class="memory-table">
+            <p class="text-center">Memory Table</p>
         </div>
     </div>
+    <footer>
+        <p class="text-center">Created By HADIS GHAFOURI</p>
+    </footer>
 </body>
 
 </html>
