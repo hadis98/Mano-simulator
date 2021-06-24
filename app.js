@@ -103,7 +103,7 @@ function scanEveryLine_first() {
     } else {
         const symbol = results_contents[0];
         console.log("lc: ", LC);
-        labels_table[symbol] = LC;
+        labels_table[symbol] = LC.substr(1, 3);
         LC = addHexNumbers(LC, '1');
         console.log("lc: ", LC);
     }
@@ -125,7 +125,8 @@ function scanEveryLine_second() {
             LC = writeHexNum(results_contents[1]);
             console.log("lc: ", LC);
             startAddress = LC;
-            PC = parseInt(results_contents[1]);
+            PC = hexToBinary(LC, 12);
+            console.log(PC);
         } else if (ith_line.includes("END")) {
             console.log('end of program');
             // end of program
@@ -175,9 +176,9 @@ function scanEveryLine_second() {
             let variable = results_contents[1];
             console.log(variable);
             address = labels_table[variable]; //xxx
-            console.log(addHexNumbers(opcode.toString(), address.toString()));
-            // let full_address = opcode.toString() + address.toString();
-            let full_address = addHexNumbers(opcode.toString(), address.toString());
+            // console.log(addHexNumbers(opcode.toString(), address.toString()));
+            let full_address = opcode.toString() + address.toString();
+            // let full_address = addHexNumbers(opcode.toString(), address.toString());
             console.log(opcode, address, full_address);
             memory_table_contents[LC] = full_address;
             LC = addHexNumbers(LC, '1');

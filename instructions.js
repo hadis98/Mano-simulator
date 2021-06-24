@@ -152,16 +152,24 @@ function binaryToHex(number) {
 }
 
 // number should be in string formS
-function hexToBinary(number) {
+function hexToBinary(number, size_number) {
     number = parseInt(number, 16);
-    console.log(number);
+    let zero_added = '';
     // If that returns a nonzero value, you know it is negative.
     if ((number & 0x8000) > 0) {
         number = number - 0x10000;
     }
 
-    console.log(number);
-    return number.toString(2);
+    if (number.toString(2).length < size_number) {
+        for (let i = 0; i < size_number - number.toString(2).length; i++) {
+            zero_added += '0';
+        }
+        number = zero_added + number.toString(2);
+        return number;
+
+    } else {
+        return number.toString(2);
+    }
     // return parseInt(number, 16).toString(2);
 }
 
