@@ -37,19 +37,27 @@ const IO_instructions = {
     IOF: "F040",
 };
 
+//REGISTERS
 let AC = '0000000000000000';
 let DR = '0000000000000000';
 let AR = '000000000000';
 let IR = '0000000000000000';
 let PC = '000000000000';
 let TR = '0000000000000000';
-let INR = '00000000';
+let INPR = '00000000';
 let OUTR = '00000000';
+
+//FLAGS
+let FGO = 0; //outup flag
+let FGI = 0; //input flag
+
+let IEN = 0; // Interrup enable
 
 let I = 0;
 let SC = 0;
 let S = 0; //start or stop
 let E = 0;
+let Cout = 0;
 let opcode_operation;
 let current_clock = '';
 let numberOfAddress = 0;
@@ -317,3 +325,17 @@ function start_assemble() {
 // get contents of editor
 // click on assemble button
 assemblerBtn.addEventListener("click", start_assemble);
+
+/**
+ORG 100
+LDA SUB
+CMA
+INC
+ADD MIN
+STA DIF
+HLT
+MIN, DEC 83
+SUB, DEC -23
+DIF, HEX 0
+END
+ */

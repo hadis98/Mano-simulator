@@ -8,7 +8,10 @@ function fetch_instruction() {
     fetchBtn.style.backgroundColor = 'rgb(4, 153, 153)';
     current_clock = 'T0';
     AR = PC; // T0
-    IR = memory_table[AR]; //T1
+    console.log(AR);
+    //IR : 16bit
+    IR = memory_table_contents['0' + parseInt(AR, 2).toString(16)]; //T1
+    console.log(IR);
     current_clock = 'T1';
     addBinary(PC, '1');
     SC = 1;
@@ -19,26 +22,18 @@ function decode_instruction() {
     // get opcode of instruction
     decodeBtn.disabled = true;
     decodeBtn.style.backgroundColor = 'rgb(4, 153, 153)';
-    console.log(hexToBinary(IR));
+    IR = hexToBinary(IR, 16);
+    console.log(IR);
     I = IR[0];
-    opcode_operation = IR.slice(12, 15); //3 bits
-    AR = IR.slice(0, 12); //0-11
+    opcode_operation = IR.substr(12, 15); //3 bits
+    AR = IR.substr(0, 12); //0-11
+    console.log(I, opcode_operation, AR);
     current_clock = 'T2';
     // T2
     // base of opcode we decide to execute
 }
 
 function execute_instruction(instruction) {
-    // if opcode !== 7
-    //then the operation is a memory refrence and starts at T4
-    // if I=1 =>> is indirect
-    //else is direct
-    //else
-    //if I=1 then it is IO refrence and starts at T3
-    //else it is register refrence  and starts at T3
-    // if(opcode_operation ==='111'){
-
-    // }
     executeBtn.disabled = true;
     executeBtn.style.backgroundColor = 'rgb(4, 153, 153)';
     if (search_in_object(register_instructions, instruction)) {
@@ -85,6 +80,59 @@ function execute_instruction(instruction) {
         }
         current_clock = 'T3';
         SC = 0;
+    } else if (search_in_object(memory_instructions, instruction)) {
+        if (instruction === 'AND') {
+            // start from T4
+            DR = memory_table_contents['0' + parseInt(AR, 2).toString(16)]; //T4
+            console.log(DR);
+            AC = andTwoNumbers(AC, DR);
+        } else if (instruction === 'ADD') {
+            DR = memory_table_contents['0' + parseInt(AR, 2).toString(16)]; //T4
+            //add AC and DR
+            AC = addBinary(AC, DR); //T5
+            E = Cout;
+        } else if (instruction === 'LDA') {
+            DR = memory_table_contents['0' + parseInt(AR, 2).toString(16)]; //T4
+            AC = DR;
+        } else if (instruction === 'STA') {
+            memory_table_contents['0' + parseInt(AR, 2).toString(16)] = AC;
+        } else if (instruction === 'BUN') {
+            PC = AR;
+        } else if (instruction === 'BSA') {
+            memory_table_contents['0' + parseInt(AR, 2).toString(16)] = PC; //T4
+            AR = addBinary(AR, '1'); //T4
+            PC = AR; //T5
+        } else if (instruction === 'ISZ') {
+            DR = memory_table_contents['0' + parseInt(AR, 2).toString(16)]; //T4
+            DR = addBinary(DR, '1'); //T5
+            memory_table_contents['0' + parseInt(AR, 2).toString(16)] = DR; //T6
+            if (DR == 0) {
+                PC = addBinary(PC, '1'); //T6
+            }
+        }
+        SC = 0;
+    } else if (search_in_object(IO_instructions, instruction)) {
+        if (instruction === 'IOF') {
+            IEN = 0;
+        } else if (instruction === 'ION') {
+            IEN = 1;
+        } else if (instruction === 'SKO') {
+            if (FGO == 1) {
+                PC = addBinary(PC, '1'); // skip next instruction
+            }
+        } else if (instruction === 'SKI') {
+            if (FGI == 0) {
+                PC = addBinary(PC, '1'); // skip next instruction
+            }
+        } else if (instruction === 'OUT') {
+            OUTR = AC.substr(8, 15); //8bit low
+            FGO = 0;
+        } else if (instruction === 'INP') {
+            // AC[0-7] = INPR; ?????????
+            FGI = 0;
+        }
+        SC = 0;
+        current_clock = 'T3';
     }
 
 }
@@ -107,7 +155,13 @@ function and(a, b) { return a == 1 && b == 1 ? 1 : 0; }
 
 function or(a, b) { return (a || b); }
 
-
+function andTwoNumbers(num1, num2) {
+    let result = '';
+    for (let i = 0; i < num1.length; i++) {
+        result += and(num1[i], num2[i]);
+    }
+    return result;
+}
 const addBinary = (str1, str2) => {
     let carry = 0;
     const res = [];
@@ -121,6 +175,7 @@ const addBinary = (str1, str2) => {
     };
     if (carry) {
         res.push(1);
+        Cout = 1;
     }
     return res.reverse().join('');
 };
