@@ -37,6 +37,24 @@ const IO_instructions = {
     IOF: "F040",
 };
 
+let AC = '0000000000000000';
+let DR = '0000000000000000';
+let AR = '000000000000';
+let IR = '0000000000000000';
+let PC = '000000000000';
+let TR = '0000000000000000';
+let INR = '00000000';
+let OUTR = '00000000';
+
+let I = 0;
+let SC = 0;
+let S = 0; //start or stop
+let E = 0;
+let opcode_operation;
+let current_clock = '';
+let numberOfAddress = 0;
+let startAddress = 0;
+// console.log(registers);
 const labels_table = {};
 const memory_table = {};
 const assemblerBtn = document.getElementById("assemblerBtn");
@@ -99,6 +117,8 @@ function scanEveryLine_second() {
     ) {
         if (ith_line.includes("ORG")) {
             LC = parseInt(results_contents[1]);
+            startAddress = LC;
+            PC.value = parseInt(results_contents[1]);
         } else if (ith_line.includes("END")) {
             console.log('end of program');
             // end of program
@@ -109,6 +129,7 @@ function scanEveryLine_second() {
                 memory_table[LC] = writeHexNum(results_contents[2]);
             }
             LC++;
+            numberOfAddress++;
         } else if (ith_line.includes("DEC")) {
             if (results_contents[0] === 'DEC') {
                 memory_table[LC] = DecToHex(results_contents[1]);
@@ -116,6 +137,7 @@ function scanEveryLine_second() {
                 memory_table[LC] = DecToHex(results_contents[2]);
             }
             LC++;
+            numberOfAddress++;
         }
     } else {
         // if it is memory refrence:
@@ -136,20 +158,24 @@ function scanEveryLine_second() {
             console.log(opcode, address, full_address);
             memory_table[LC] = full_address;
             LC++;
+            numberOfAddress++;
 
         } else if (search_in_object(register_instructions, target)) {
             let opcode = register_instructions[target];
             memory_table[LC] = opcode;
             LC++;
+            numberOfAddress++;
 
         } else if (search_in_object(IO_instructions, target)) {
             let opcode = IO_instructions[target];
             memory_table[LC] = opcode;
             LC++;
+            numberOfAddress++;
         } else {
             console.log('waaaaaaaaaaarning!!!! in line: ' + LC + ' of memory');
             console.log('instruction doesnt exist');
             LC++;
+            numberOfAddress++;
         }
     }
     results_index++;
@@ -167,6 +193,9 @@ assemblerBtn.addEventListener("click", () => {
     secondStep();
     console.log(labels_table);
     console.log(memory_table);
+    updateContentsColumn();
+    assemblerBtn.disabled = true;
+    assemblerBtn.style.backgroundColor = 'rgb(4, 153, 153)';
 });
 
 
@@ -220,17 +249,3 @@ function writeHexNum(number) {
         return number = number_of_zero + number;
     }
 }
-
-/**
-ORG 100
-LDA SUB
-CMA
-INC
-ADD MIN
-STA DIF
-HLT
-MIN, DEC 83
-SUB, DEC -23
-DIF, HEX 0
-END
- */
