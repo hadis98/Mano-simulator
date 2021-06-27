@@ -70,6 +70,8 @@ const assemblerBtn = document.getElementById("assemblerBtn");
 let editor_contents;
 let results;
 let results_index = 0;
+let operations_line = 0;
+let instructions_arr = [];
 // firt level of simulations:
 
 // line counter
@@ -169,6 +171,7 @@ function scanEveryLine_second() {
     } else {
         // if it is memory refrence:
         let target = results_contents[0];
+        instructions_arr.push(target);
         if (search_in_object(memory_instructions, target)) {
             // if it is memory instruction:
             // format: instruction label or format: instruction label I
@@ -286,13 +289,14 @@ function DecToHex_contents(number) {
 
 }
 
-function writeHexNum(number) {
-    if (number.length <= 4) {
+function writeHexNum(hex_number) {
+    if (hex_number.length <= 4) {
         let number_of_zero = '';
-        for (let i = 0; i < 4 - number.length; i++) {
+        for (let i = 0; i < 4 - hex_number.length; i++) {
             number_of_zero += '0';
         }
-        return number = number_of_zero + number;
+        hex_number = number_of_zero + hex_number;
+        return hex_number
     }
 }
 
@@ -320,6 +324,12 @@ function start_assemble() {
     updateContentsColumn();
     assemblerBtn.disabled = true;
     assemblerBtn.style.backgroundColor = 'rgb(4, 153, 153)';
+    instr_values['Memory'] = binaryToHex(PC);
+    instr_values['PC'] = binaryToHex(PC);
+    updateInstructionTable('initial');
+    enableBtn(fetchBtn);
+    enableBtn(decodeBtn);
+    enableBtn(executeBtn);
 }
 
 // get contents of editor
