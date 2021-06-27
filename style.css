@@ -3,11 +3,11 @@ body {
     padding: 0;
     box-sizing: border-box;
     background-color: #e7ffff;
-    font-family: 'Pangolin', cursive;
+    font-family: "Pangolin", cursive;
 }
 
 button {
-    font-family: 'Pangolin', cursive;
+    font-family: "Pangolin", cursive;
 }
 
 .info-header {
@@ -80,7 +80,7 @@ button {
     padding: 0.4rem;
     font-size: 0.9rem;
     color: #003233e9;
-    border: 2px solid #014D4E;
+    border: 2px solid #014d4e;
 }
 
 .memory-table {
@@ -116,7 +116,7 @@ button {
 
 .instruction-table__container {
     width: 60%;
-    color: #1F3B4D;
+    color: #1f3b4d;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -189,7 +189,7 @@ button {
 .instruction-table tr,
 .instruction-table td {
     border-collapse: collapse;
-    border: 1px solid #1F3B4D;
+    border: 1px solid #1f3b4d;
 }
 
 .instruction-table tr,
@@ -216,7 +216,13 @@ textarea:focus {
 }
 
 footer p {
+    font-size: 0.6rem;
     margin: 0;
+    color: darkblue;
+    position: absolute;
+    bottom: 0.5rem;
+    right: 50%;
+    font-weight: 1000;
 }
 
 .sticky-header {
@@ -224,4 +230,55 @@ footer p {
     position: sticky;
     background-color: aquamarine;
     color: black;
+}
+
+#endProgram_notif {
+    text-align: center;
+    color: rgb(52, 52, 253);
+    display: none;
+}
+
+.show {
+    display: block !important;
+}
+
+.hide {
+    display: none !important;
+}
+
+.help {
+    position: absolute;
+    top: 0;
+    left: 0;
+    min-height: 100vh;
+    width: 17rem;
+    transform: translate(-25rem);
+    transition: transform 1s ease-in-out;
+    background-color: #333;
+    color: #fff;
+    padding-right: 1.2rem;
+    padding-left: 1.2rem;
+    font-size: 0.7rem;
+}
+
+.help.show {
+    transform: translateX(0);
+}
+
+.btn {
+    cursor: pointer;
+    border: 0;
+    padding: 0.5rem 1rem;
+    color: #fff;
+    background-color: #000;
+    border-radius: 5px;
+    font-size: 0.7rem;
+}
+
+.btn:hover {
+    background-color: #222;
+}
+
+.btn:active {
+    transform: scale(0.9);
 }

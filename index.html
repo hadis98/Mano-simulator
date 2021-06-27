@@ -10,8 +10,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Pangolin&display=swap" rel="stylesheet">
     <title>Mano Simulator</title>
     <script src="app.js" defer></script>
-    <script src="instructions.js" defer></script>
     <script src="draw_tables.js" defer></script>
+    <script src="instructions.js" defer></script>
 </head>
 
 <body>
@@ -39,13 +39,24 @@
                 <button class="button" id="decodeBtn"><img src="images/decode.png" alt="">Decode</button>
                 <button class="button" id="executeBtn"><img src="images/execution.png" alt="">Execute</button>
             </div>
-            <!-- <div class="instruction-infos">
-                +Lorem ipsum dolor sit amet consectetur, adipisicing elit. Qui perferendis animi repellat, id vero non pariatur sapiente quasi autem iure ratione voluptate, quibusdam natus temporibus fugiat voluptatum maiores porro modi.
-            </div> -->
+            <div class="instruction-info">
+                <div id="endProgram_notif">
+                    <p>End of Program:)</p>
+                    <p>to test another example click on RESET button</p>
+                </div>
+            </div>
         </div>
         <div class="memory-table">
             <p class="text-center">Memory Table</p>
         </div>
+    </div>
+    <div id="help" class="help">
+        <h2>How to use this program?</h2>
+        <p>
+            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Voluptate at deleniti ex veritatis vero minus repudiandae? Mollitia animi non, error quos, numquam quasi quisquam ullam ipsum dolore, repellat quas! Error!
+        </p>
+
+        <button id="close-btn" class="btn">Close</button>
     </div>
     <footer>
         <p class="text-center">Created By HADIS GHAFOURI</p>
