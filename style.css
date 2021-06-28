@@ -81,6 +81,7 @@ button {
     font-size: 0.9rem;
     color: #003233e9;
     border: 2px solid #014d4e;
+    resize: none;
 }
 
 .memory-table {
@@ -183,6 +184,12 @@ button {
 .instruction-table table {
     width: 90%;
     margin: 0 auto;
+    table-layout: fixed;
+    /* text-align: center; */
+}
+
+.instruction-table table .info-column {
+    width: 20%;
 }
 
 .instruction-table table,
@@ -222,7 +229,7 @@ footer p {
     /* position: absolute; */
     /* bottom: 0.5rem; */
     /* right: 50%; */
-    font-weight: 1000;
+    font-weight: 900;
 }
 
 .sticky-header {
@@ -258,11 +265,31 @@ footer p {
     color: #fff;
     padding-right: 1.2rem;
     padding-left: 1.2rem;
-    font-size: 0.7rem;
+    font-size: 0.8rem;
 }
 
 .help.show {
     transform: translateX(0);
+}
+
+.help-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.help-header h1 {
+    display: block;
+}
+
+.help-header img {
+    display: block;
+    width: 20%;
+}
+
+.help .note {
+    color: rgb(151, 245, 253);
 }
 
 .btn {
@@ -279,6 +306,17 @@ footer p {
     background-color: #222;
 }
 
-.btn:active {
+.btn:active,
+#helpBtn:active,
+#resetBtn:active {
     transform: scale(0.9);
+}
+
+#helpBtn:hover,
+#resetBtn:hover {
+    background-color: #164f57;
+}
+
+.myself {
+    color: #45f0cb;
 }

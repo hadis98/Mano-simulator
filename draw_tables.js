@@ -1,5 +1,5 @@
 // create a table to show instructions:
-const row_items = ['element', 'initial values', 'T0', 'T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'After Execution'];
+const row_items = ['Elements', 'Initial Values', 'T0', 'T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'After Execution'];
 const column_items = ['statements', 'IR', 'AC', 'DR', 'PC', 'AR', 'M[AR]', 'E'];
 const inst_table = document.createElement('table');
 const inst_table_container = document.querySelector('.instruction-table');
@@ -17,6 +17,7 @@ for (let i = 0; i < 10; i++) {
         if (j == 0) {
             column.innerText = row_items[i];
             column.classList.add('bold-text');
+            column.classList.add('info-column');
         }
         row.appendChild(column);
     }

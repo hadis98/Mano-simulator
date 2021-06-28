@@ -368,8 +368,8 @@ function start_assemble() {
     updateContentsColumn();
     assemblerBtn.disabled = true;
     assemblerBtn.style.backgroundColor = 'rgb(4, 153, 153)';
-    instr_values['Memory'] = binaryToHex(PC);
-    instr_values['PC'] = binaryToHex(PC);
+    instr_values['Memory'] = '0x' + binaryToHex(PC);
+    instr_values['PC'] = '0x' + binaryToHex(PC);
     updateInstructionTable('initial');
     enableBtn(fetchBtn);
     enableBtn(decodeBtn);
