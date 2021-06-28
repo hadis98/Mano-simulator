@@ -31,18 +31,18 @@ function fetch_instruction() {
         // current_clock = 'T0';
         instr_values["PC"] = binaryToHex(PC);
         AR = PC; // T0
-        console.log('in fetch:  AR: ', AR, 'PC: ', PC);
+        console.log('in fetch:  AR: ', binaryToHex(AR), 'PC: ', binaryToHex(AR));
         instr_values["AR"] = binaryToHex(AR);
-        console.log('AR', AR);
+        // console.log('AR', AR);
         updateInstructionTable('T0');
         console.log('in fetch: memory value: ', memory_table_contents['0' + parseInt(AR, 2).toString(16)]);
         IR = contentToAddress(memory_table_contents['0' + parseInt(AR, 2).toString(16)]); //T1
-        console.log('in fetch:  IR: ', IR);
+        console.log('in fetch:  IR: ', IR, binaryToHex(IR));
         let data = memory_table_contents['0' + parseInt(AR, 2).toString(16)];
         instr_values['Memory'] = data ? data : 0;
         instr_values["IR"] = binaryToHex(IR);
         current_clock = 'T1';
-        PC = addBinary(PC, '1');
+        PC = addBinary(PC, '1'); // become ready for next instruction
         console.log('in fetch:  PC: ', PC);
         instr_values["PC"] = binaryToHex(PC);
         SC = 1;
@@ -112,18 +112,22 @@ function execute_instruction() {
                 AC = addBinary(AC, '1');
                 instr_values['AC'] = binaryToHex(AC);
             } else if (instruction === 'CIR') {
-                // shift to right AC
-                AC >> 1;
-                AC = updateBit(AC, 0, E);
-                E = AC[15];
-                instr_values['AC'] = AC;
+                let temp = AC[15];
+                let ans = '';
+                ans += E;
+                ans += AC.substr(0, AC.length - 1);
+                AC = ans;
+                E = temp;
+                instr_values['AC'] = binaryToHex(AC);
                 instr_values['E'] = E;
             } else if (instruction === 'CIL') {
                 // shift to left AC , AC should be in binary
-                AC << 1;
-                AC = updateBit(AC, 15, E);
-                E = AC[0];
-                instr_values['AC'] = AC;
+                let temp = AC[15];
+                let ans = '';
+                ans = AC.substr(1, AC.length) + temp;
+                AC = ans;
+                E = temp;
+                instr_values['AC'] = binaryToHex(AC);
                 instr_values['E'] = E;
             } else if (instruction === 'CME') {
                 E = complementOne(E);
@@ -240,13 +244,11 @@ function execute_instruction() {
             }
             SC = 0;
             updateInstructionTable('T3');
-            // updateInstructionTable('final');
             current_clock = 'T3';
         }
         updateInstructionTable('final');
         enableBtn(fetchBtn);
         enableBtn(decodeBtn);
-        // executeBtn.style.backgroundColor = '#29526b';
         operations_line++;
     }
 }
@@ -354,13 +356,10 @@ function hexToBinary(number, size_number) {
             zero_added += '0';
         }
         number = zero_added + number.toString(2);
-        // return number;
     } else {
-        // return number.toString(2);
         number = number.toString(2);
     }
     return number;
-    // return parseInt(number, 16).toString(2);
 }
 
 function hexToBinary_signed(hex_number, size_number) {
@@ -393,6 +392,21 @@ function isNegative(data) {
     }
 }
 
+function shift_right(register) {
+    let ans = '';
+    ans += register[0];
+    let sub = register.substr(0, register.length - 1);
+    ans = ans + sub;
+    return ans;
+}
+
+function shift_left(register) {
+    let ans = '';
+    ans += register[0];
+    let sub = register.substr(1, register.length);
+    ans = sub + ans;
+    return ans;
+}
 
 const helpBtn = document.getElementById("helpBtn");
 const closeBtn = document.getElementById("close-btn");

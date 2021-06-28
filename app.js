@@ -124,6 +124,7 @@ function scanEveryLine_first() {
 function scanEveryLine_second() {
     let ith_line = results[results_index];
     let results_contents = results[results_index].split(/[ ,]+/);
+
     if (
         ith_line.includes("ORG") ||
         ith_line.includes("END") ||
@@ -168,6 +169,50 @@ function scanEveryLine_second() {
             console.log("lc: ", LC);
             numberOfAddress++;
         }
+    } else if (ith_line.includes(',') &&
+        !ith_line.includes("HEX") &&
+        !ith_line.includes("DEC")) {
+        console.log('in LC = ', LC, ' the label is: ', results_contents[0])
+        let target = results_contents[1];
+
+        if (search_in_object(memory_instructions, target)) {
+            let opcode; //x
+            if (results_contents.includes('I')) {
+                opcode = memory_instructions[target][1]; //x
+                console.log(opcode);
+            } else {
+                opcode = memory_instructions[target][0]; //x
+                console.log(opcode);
+            }
+            let address;
+            let variable = results_contents[2];
+            console.log(variable);
+            address = labels_table[variable]; //xxx
+            let full_address = opcode.toString() + address.toString();
+            console.log(opcode, address, full_address);
+            memory_table_contents[LC] = full_address;
+            LC = addHexNumbers(LC, '1');
+            console.log("lc: ", LC);
+            numberOfAddress++;
+
+        } else if (search_in_object(register_instructions, target)) {
+            // instructions_arr.push(target);
+            let opcode = register_instructions[target];
+            memory_table_contents[LC] = opcode;
+            LC = addHexNumbers(LC, '1');
+            numberOfAddress++;
+            console.log("lc: ", LC);
+
+        } else if (search_in_object(IO_instructions, target)) {
+            // instructions_arr.push(target);
+            let opcode = IO_instructions[target];
+            memory_table_contents[LC] = opcode;
+            LC = addHexNumbers(LC, '1');
+            numberOfAddress++;
+            console.log("lc: ", LC);
+        }
+        instructions_arr.push(target);
+
     } else {
         // if it is memory refrence:
         let target = results_contents[0];
@@ -187,9 +232,7 @@ function scanEveryLine_second() {
             let variable = results_contents[1];
             console.log(variable);
             address = labels_table[variable]; //xxx
-            // console.log(addHexNumbers(opcode.toString(), address.toString()));
             let full_address = opcode.toString() + address.toString();
-            // let full_address = addHexNumbers(opcode.toString(), address.toString());
             console.log(opcode, address, full_address);
             memory_table_contents[LC] = full_address;
             LC = addHexNumbers(LC, '1');
@@ -349,3 +392,30 @@ SUB, DEC -23
 DIF, HEX 0
 END
  */
+
+/*
+ORG 100
+LOP, CLE
+LDA Y
+CIR
+STA Y
+SZE
+BUN ONE
+BUN ZRO
+ONE, LDA X
+ADD P
+STA P
+CLE
+ZRO, LDA X
+CIL
+STA X
+ISZ CTR
+BUN LOP
+HLT
+CTR, DEC -8
+X, HEX F
+Y, HEX B
+P, HEX 0
+END
+
+*/
