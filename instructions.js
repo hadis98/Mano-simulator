@@ -31,13 +31,15 @@ function fetch_instruction() {
     instr_values["PC"] = binaryToHex(PC);
     AR = PC; // T0
     console.log('in fetch:  AR: ', binaryToHex(AR), 'PC: ', binaryToHex(AR));
-    instr_values["AR"] = binaryToHex(AR);
-    updateInstructionTable('T0');
-    console.log('in fetch: memory value: ', memory_table_contents['0' + parseInt(AR, 2).toString(16).toUpperCase()]);
-    IR = contentToAddress(memory_table_contents['0' + parseInt(AR, 2).toString(16).toUpperCase()]); //T1
-    console.log('in fetch:  IR: ', IR, binaryToHex(IR));
     let data = memory_table_contents['0' + parseInt(AR, 2).toString(16).toUpperCase()];
     instr_values['Memory'] = data ? data : 0;
+    console.log('in fetch: memory value: ', data);
+
+    instr_values["AR"] = binaryToHex(AR);
+    updateInstructionTable('T0');
+    IR = contentToAddress(data); //T1
+    console.log('in fetch:  IR: ', IR, binaryToHex(IR));
+
     instr_values["IR"] = binaryToHex(IR);
     PC = addBinary(PC, '1'); // become ready for next instruction
     console.log('in fetch:  PC: ', PC);
@@ -58,7 +60,7 @@ function decode_instruction() {
     instr_values["AR"] = binaryToHex(AR);
     let data = memory_table_contents['0' + parseInt(AR, 2).toString(16)];
     instr_values['Memory'] = data ? data : 0;
-    console.log('in decode: ', I, opcode_operation, AR);
+    console.log('in decode: I=', I, 'opcode: ', opcode_operation, 'AR', AR);
     updateInstructionTable('T2');
 
 }
@@ -78,8 +80,9 @@ function execute_instruction() {
                 end_notif_box.classList.add('show');
                 return 0;
             } else if (operation == 10) {
-                console.log('SZE');
-                if (!E) {
+                console.log('SZE', 'E: ', E);
+                if (E == 0) {
+                    console.log('if E was zero: jump', E, typeof(E));
                     PC = addBinary(PC, '1');
                     instr_values['PC'] = binaryToHex(PC);
                 }
@@ -164,6 +167,12 @@ function execute_instruction() {
             updateInstructionTable('T3');
         }
     } else { //memory ref
+        if (I == 1) {
+            let data = memory_table_contents['0' + parseInt(AR, 2).toString(16).toUpperCase()];
+            AR = isNegative(data) ? hexToBinary_signed(data, 16) : hexToBinary(data, 16);
+            instr_values['AR'] = data;
+            instr_values['Memory'] = memory_table_contents['0' + data];
+        }
         if (opcode == 0) {
             console.log('AND');
             let data = memory_table_contents['0' + parseInt(AR, 2).toString(16).toUpperCase()];
@@ -197,6 +206,7 @@ function execute_instruction() {
             updateInstructionTable('T5');
         } else if (opcode == 2) {
             console.log('LDA');
+            console.log('AR : ', AR, binaryToHex(AR));
             console.log('in LDA: memory[AR]: ', memory_table_contents['0' + parseInt(AR, 2).toString(16).toUpperCase()]);
             console.log('in LDA: DR before: ', DR);
 
@@ -219,14 +229,16 @@ function execute_instruction() {
         } else if (opcode == 4) {
             console.log('BUN');
             PC = AR;
+            console.log('pc in BUN: ', PC, binaryToHex(PC));
             instr_values['PC'] = binaryToHex(PC);
         } else if (opcode == 5) {
             console.log('BSA');
             memory_table_contents['0' + parseInt(AR, 2).toString(16).toUpperCase()] = binaryToHex(PC); //T4 ????? convert address to content
             update_memory_table('0' + parseInt(AR, 2).toString(16).toUpperCase());
-            instr_values['Memory'] = binaryToHex(PC);
+            // instr_values['Memory'] = binaryToHex(PC);
             AR = addBinary(AR, '1'); //T4
             instr_values['AR'] = binaryToHex(AR);
+            instr_values['Memory'] = memory_table_contents['0' + parseInt(AR, 2).toString(16).toUpperCase()];
             updateInstructionTable('T4');
             PC = AR; //T5
             instr_values['PC'] = binaryToHex(PC);
@@ -238,8 +250,11 @@ function execute_instruction() {
             DR = isNegative(data) ? hexToBinary_signed(data, 16) : hexToBinary(data, 16);
             instr_values['DR'] = binaryToHex(DR);
             updateInstructionTable('T4');
-
-            DR = addBinary(DR, '1'); //T5
+            if (DR == '1111111111111111') {
+                DR = '0000000000000000';
+            } else {
+                DR = addBinary(DR, '1'); //T5
+            }
             instr_values['DR'] = binaryToHex(DR);
             updateInstructionTable('T5');
 
@@ -247,10 +262,14 @@ function execute_instruction() {
             update_memory_table(address);
             data = memory_table_contents[address];
             instr_values['Memory'] = data;
+            console.log(memory_table_contents);
+            console.log('in ISZ: DR: ', DR, binaryToHex(DR));
 
             if (DR == 0) {
                 PC = addBinary(PC, '1'); //T6
                 instr_values['PC'] = binaryToHex(PC);
+                console.log('whhhhoooooooooora DR became zero...', DR);
+                console.log('PC in isz: ', PC);
             }
             updateInstructionTable('T6');
         }
@@ -369,7 +388,7 @@ function hexToBinary_signed(hex_number, size_number) {
             answer = zero_added + answer; //'00000001010101' ex
             finalAns = complementOne(answer);
             finalAns = addBinary(finalAns, '1');
-            console.log('final answer in hextobinary func: ', finalAns);
+            console.log('final answer in hextobinary_signed func: ', finalAns);
             return finalAns;
         } else {
             console.log('in negative hextobinary func: answer: ', answer);
