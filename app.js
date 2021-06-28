@@ -59,6 +59,7 @@ let S = 0; //start or stop
 let E = 0;
 let Cout = 0;
 let opcode_operation;
+let operation_code;
 let current_clock = '';
 let numberOfAddress = 0;
 let startAddress = 0;
