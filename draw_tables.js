@@ -46,7 +46,7 @@ for (let i = 0; i < 4097; i++) {
             column.innerText = i;
             column.classList.add('bold-text');
         } else if (j == 1) {
-            column.innerText = DecToHex(i);
+            column.innerText = DecToHex_address(i);
             column.classList.add('bold-text');
         }
 
@@ -61,21 +61,71 @@ for (let i = 0; i < 4097; i++) {
 memoryTable__container.appendChild(memoryTable);
 // console.log(memory_array);
 
+const table = document.querySelector('.memory-table table');
+const rows = table.getElementsByTagName('tr');
+const columns = table.getElementsByTagName('td');
 
 function updateContentsColumn() {
-    const table = document.querySelector('.memory-table table');
-    const rows = table.getElementsByTagName('tr');
-    const columns = table.getElementsByTagName('td');
     let counter = startAddress;
     for (let i = parseInt('0x' + startAddress); i < parseInt('0x' + startAddress) + numberOfAddress; i++) {
-        columns[i * 3 + 2].innerText = memory_table[counter];
-        counter++;
+        columns[i * 3 + 2].innerText = memory_table_contents[counter];
+        counter = addHexNumbers(counter, '1');
     }
     scrollToRow(parseInt('0x' + startAddress));
+}
+
+function update_memory_table(address) {
+    console.log('in update memory: address: ', address);
+    let index = parseInt('0x' + address);
+    console.log('index: ', index);
+    columns[index * 3 + 2].innerText = writeHexNum(memory_table_contents[address]);
 }
 
 function scrollToRow(number) {
     const table = document.querySelector('.memory-table table');
     const rows = table.getElementsByTagName('tr');
     table.scrollTop = rows[number - 2].offsetTop;
+}
+
+// instruction table
+const instructionTable = document.querySelector('.instruction-table table');
+const inst_rows = instructionTable.getElementsByTagName('tr');
+const inst_columns = instructionTable.getElementsByTagName('td');
+
+function updateInstructionTable(value) {
+    let column = 0; //switch case?
+    if (value == 'initial') {
+        column = 9;
+    } else if (value == 'T0') {
+        column = 17
+    } else if (value == 'T1') {
+        column = 25
+    } else if (value == 'T2') {
+        column = 33;
+    } else if (value == 'T3') {
+        column = 41;
+    } else if (value == 'T4') {
+        column = 49;
+    } else if (value == 'T5') {
+        column = 57;
+    } else if (value == 'T6') {
+        column = 65;
+    } else if (value == 'final') {
+        column = 73;
+    }
+    for (const key in instr_values) {
+        inst_columns[column].innerText = instr_values[key];
+        column++;
+    }
+}
+
+function clearInstTable() {
+    counter = 17;
+    for (let i = 0; i < 8; i++) {
+        for (let column = counter; column <= counter + 6; column++) {
+            inst_columns[column].innerText = '';
+        }
+        counter += 8;
+    }
+
 }
