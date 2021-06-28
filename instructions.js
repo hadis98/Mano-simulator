@@ -405,9 +405,15 @@ function isNegative(data) {
     }
 }
 
+function resetProgram() {
+    location.reload();
+}
+
 const helpBtn = document.getElementById("helpBtn");
 const closeBtn = document.getElementById("close-btn");
 const rules = document.getElementById("help");
+const resetBtn = document.getElementById("resetBtn");
+
 
 fetchBtn.addEventListener('click', fetch_instruction);
 decodeBtn.addEventListener('click', decode_instruction);
@@ -419,3 +425,5 @@ helpBtn.addEventListener("click", () => {
 closeBtn.addEventListener("click", () => {
     rules.classList.remove("show");
 });
+
+resetBtn.addEventListener('click', resetProgram);
