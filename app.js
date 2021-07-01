@@ -76,6 +76,8 @@ let operations_line = 0;
 const errorLine = document.getElementById('error_line');
 const errorLineBtn = document.getElementById('errorLineBtn');
 const errorLine_container = document.getElementById('errorLine_container');
+const assemble_successfully = document.getElementById('assembled_successfully_container');
+const assembled_successfully_Btn = document.getElementById('assembled_successfully_Btn');
 // let instructions_arr = [];
 // firt level of simulations:
 
@@ -379,6 +381,8 @@ function start_assemble() {
         secondStep();
         console.log('error line: ', errorLine);
         if (errorLine.innerText == '') {
+            assemble_successfully.style.display = 'flex';
+            boxShadow.classList.add('show');
             console.log(labels_table);
             console.log(memory_table_contents);
             updateContentsColumn();
@@ -388,8 +392,8 @@ function start_assemble() {
             instr_values['PC'] = '0x' + binaryToHex(PC);
             updateInstructionTable('initial');
             enableBtn(fetchBtn);
-            enableBtn(decodeBtn);
-            enableBtn(executeBtn);
+            // enableBtn(decodeBtn);
+            // enableBtn(executeBtn);
         }
     }
 }
@@ -406,6 +410,12 @@ errorLineBtn.addEventListener('click', () => {
     errorLine_container.style.display = 'none';
     boxShadow.classList.remove('show');
 })
+
+assembled_successfully_Btn.addEventListener('click', () => {
+    assemble_successfully.style.display = 'none';
+    boxShadow.classList.remove('show');
+})
+
 
 /**
 ORG 100

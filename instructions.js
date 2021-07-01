@@ -17,21 +17,22 @@ const current_instruction = document.getElementById('current-instruction');
 const update_memory_alarm = document.getElementById('update_memory_alarm');
 const content_memory_span = document.getElementById('content_memory');
 const current_address_span = document.getElementById('current_address');
+const show_steps = document.getElementById('show-steps');
 
 function disableBtn(button) {
     button.disabled = true;
-    button.style.backgroundColor = 'rgb(4, 153, 153)';
+    // button.style.backgroundColor = 'rgb(4, 153, 153)';
 }
 
 function enableBtn(button) {
     button.disabled = false;
-    button.style.backgroundColor = '#29526b';
+    // button.style.backgroundColor = '#29526b';
 }
 
 function fetch_instruction() {
+    show_steps.innerText = 'fetched';
     clearInstTable();
     updateInstructionTable('initial')
-    disableBtn(fetchBtn);
     instr_values["PC"] = '0x' + binaryToHex(PC);
     AR = PC; // T0
     console.log('in fetch:  AR: ', binaryToHex(AR), 'PC: ', binaryToHex(AR));
@@ -45,7 +46,7 @@ function fetch_instruction() {
     console.log('in fetch:  IR: ', IR, binaryToHex(IR));
 
     instr_values["IR"] = '0x' + binaryToHex(IR);
-    PC = addBinary(PC, '1'); // become ready for next instruction
+    PC = addBinary(PC, '1', 12); // become ready for next instruction
     console.log('in fetch:  PC: ', PC);
     instr_values["PC"] = '0x' + binaryToHex(PC);
     updateInstructionTable('T1');
@@ -53,12 +54,14 @@ function fetch_instruction() {
     inst_columns[48].innerText = 'T4:';
     inst_columns[56].innerText = 'T5:';
     inst_columns[64].innerText = 'T6:';
+    disableBtn(fetchBtn);
+    enableBtn(decodeBtn);
 
 }
 console.log(IR);
 
 function decode_instruction() {
-    disableBtn(decodeBtn);
+    show_steps.innerText = 'decoded';
     console.log('in Decode: IR: ', IR);
     I = IR[0];
     opcode_operation = IR.substr(1, 3); //3 bits
@@ -70,10 +73,12 @@ function decode_instruction() {
     instr_values['Memory'] = data ? '0x' + data : '0x' + 0;
     console.log('in decode: I=', I, 'opcode: ', opcode_operation, 'AR', AR);
     updateInstructionTable('T2');
-
+    disableBtn(decodeBtn);
+    enableBtn(executeBtn);
 }
 
 function execute_instruction() {
+    show_steps.innerText = 'executed';
     let opcode = parseInt(opcode_operation, 2);
     let operation = operation_code;
     console.log('opcode and operation: ', opcode, operation);
@@ -86,6 +91,9 @@ function execute_instruction() {
                 disableBtn(fetchBtn);
                 disableBtn(decodeBtn);
                 disableBtn(executeBtn);
+                fetchBtn.style.backgroundColor = 'rgb(4, 153, 153)';
+                decodeBtn.style.backgroundColor = 'rgb(4, 153, 153)';
+                executeBtn.style.backgroundColor = 'rgb(4, 153, 153)';
                 end_notif_box.style.display = 'flex';
                 boxShadow.classList.add('show');
                 inst_columns[40].innerText = 'T3: S<-0';
@@ -95,7 +103,7 @@ function execute_instruction() {
                 current_instruction.innerText = 'SZE';
                 if (E == 0) {
                     console.log('if E was zero: jump', E, typeof(E));
-                    PC = addBinary(PC, '1');
+                    PC = addBinary(PC, '1', 12);
                     instr_values['PC'] = '0x' + binaryToHex(PC);
                     inst_columns[40].innerText = 'T3: PC <- PC+1';
                 }
@@ -103,7 +111,7 @@ function execute_instruction() {
                 current_instruction.innerText = 'SZA';
                 console.log('SZA');
                 if (AC === '0000000000000000') {
-                    PC = addBinary(PC, '1');
+                    PC = addBinary(PC, '1', 12);
                     instr_values['PC'] = '0x' + binaryToHex(PC);
                     inst_columns[40].innerText = 'T3: PC <- PC+1';
                 }
@@ -111,7 +119,7 @@ function execute_instruction() {
                 current_instruction.innerText = 'SNA';
                 console.log('SNA');
                 if (AC[0] === '1') {
-                    PC = addBinary(PC, '1');
+                    PC = addBinary(PC, '1', 12);
                     instr_values['PC'] = '0x' + binaryToHex(PC);
                     inst_columns[40].innerText = 'T3: PC <- PC+1';
                 }
@@ -119,14 +127,18 @@ function execute_instruction() {
                 current_instruction.innerText = 'SPA';
                 console.log('SPA');
                 if (AC[15] === '0') {
-                    PC = addBinary(PC, '1');
+                    PC = addBinary(PC, '1', 12);
                     instr_values['PC'] = '0x' + binaryToHex(PC);
                     inst_columns[40].innerText = 'T3: PC <- PC+1';
                 }
             } else if (operation == 6) {
                 current_instruction.innerText = 'INC';
                 console.log('INC');
-                AC = addBinary(AC, '1');
+                if (AC == '1111111111111111') {
+                    AC = '0000000000000000';
+                } else {
+                    AC = addBinary(AC, '1', 16); //T5
+                }
                 instr_values['AC'] = '0x' + binaryToHex(AC);
                 inst_columns[40].innerText = 'T3: AC <- AC +1';
             } else if (operation == 5) {
@@ -184,11 +196,11 @@ function execute_instruction() {
                 IEN = 1;
             } else if (operation == 3) {
                 if (FGO == 1) {
-                    PC = addBinary(PC, '1'); // skip next instruction
+                    PC = addBinary(PC, '1', 12); // skip next instruction
                 }
             } else if (operation == 2) {
                 if (FGI == 0) {
-                    PC = addBinary(PC, '1'); // skip next instruction
+                    PC = addBinary(PC, '1', 12); // skip next instruction
                 }
             } else if (operation == 1) {
                 OUTR = AC.substr(8, 15); //8bit low
@@ -237,7 +249,11 @@ function execute_instruction() {
             console.log('in ADD: DR: ', DR);
             inst_columns[48].innerText = 'T4: DR<-M[AR]';
             updateInstructionTable('T4');
-            AC = addBinary(AC, DR); //T5
+            if (AC == '1111111111111111') {
+                AC = '0000000000000000';
+            } else {
+                AC = addBinary(AC, '1', 16); //T5
+            }
             E = Cout;
             instr_values['AC'] = '0x' + binaryToHex(AC);
             instr_values['E'] = '0x' + E;
@@ -297,7 +313,7 @@ function execute_instruction() {
             setTimeout(() => {
                 update_memory_alarm.classList.remove('show');
             }, 6000);
-            AR = addBinary(AR, '1'); //T4
+            AR = addBinary(AR, '1', 12); //T4
             instr_values['AR'] = '0x' + binaryToHex(AR);
             instr_values['Memory'] = '0x' + memory_table_contents[address];
             inst_columns[48].innerText = 'T4: M[AR]<-PC,AR<-AR+1';
@@ -318,7 +334,7 @@ function execute_instruction() {
             if (DR == '1111111111111111') {
                 DR = '0000000000000000';
             } else {
-                DR = addBinary(DR, '1'); //T5
+                DR = addBinary(DR, '1', 16); //T5
             }
             instr_values['DR'] = '0x' + binaryToHex(DR);
             inst_columns[56].innerText = 'T5: DR<-DR+1';
@@ -338,7 +354,7 @@ function execute_instruction() {
             console.log('in ISZ: DR: ', DR, binaryToHex(DR));
             inst_columns[64].innerText = 'T6: M[AR]<-DR,SC<-0';
             if (DR == 0) {
-                PC = addBinary(PC, '1'); //T6
+                PC = addBinary(PC, '1', 12); //T6
                 instr_values['PC'] = '0x' + binaryToHex(PC);
                 console.log('whhhhoooooooooora DR became zero...', DR);
                 console.log('PC in isz: ', PC);
@@ -349,8 +365,9 @@ function execute_instruction() {
         }
     }
     updateInstructionTable('final');
+    disableBtn(executeBtn);
     enableBtn(fetchBtn);
-    enableBtn(decodeBtn);
+    // enableBtn(decodeBtn);
     operations_line++;
 }
 
@@ -372,7 +389,7 @@ function andTwoNumbers(num1, num2) {
     }
     return result;
 }
-const addBinary = (str1, str2) => {
+const addBinary = (str1, str2, size) => {
     let carry = 0;
     const res = [];
     let l1 = str1.length;
@@ -387,7 +404,11 @@ const addBinary = (str1, str2) => {
         res.push(1);
         Cout = 1;
     }
-    return res.reverse().join('');
+    if (res.length > size) {
+        return res.reverse().splice(size - res.length).join('');
+    } else {
+        return res.reverse().join('');
+    }
 };
 
 
