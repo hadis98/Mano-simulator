@@ -14,6 +14,7 @@ button {
     text-align: center;
     color: rgb(0, 61, 98);
     margin-bottom: 0;
+    margin-top: 0.4rem;
 }
 
 #helpBtn {
@@ -81,6 +82,7 @@ button {
     font-size: 0.9rem;
     color: #003233e9;
     border: 2px solid #014d4e;
+    resize: none;
 }
 
 .memory-table {
@@ -94,6 +96,7 @@ button {
 }
 
 .memory-table table {
+    table-layout: fixed;
     width: 90%;
     margin: 0 auto;
     overflow-y: auto;
@@ -121,7 +124,7 @@ button {
     flex-direction: column;
     justify-content: center;
     justify-content: space-around;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
 }
 
 .instruction-table table {
@@ -165,10 +168,12 @@ button {
     font-weight: bolder;
 }
 
+
+/* 
 .button:hover,
 #assemblerBtn:hover {
     background-color: rgb(4, 153, 153);
-}
+} */
 
 .button:active {
     transform: scale(0.95);
@@ -183,6 +188,12 @@ button {
 .instruction-table table {
     width: 90%;
     margin: 0 auto;
+    table-layout: fixed;
+    /* text-align: center; */
+}
+
+.instruction-table table .info-column {
+    width: 25%;
 }
 
 .instruction-table table,
@@ -222,7 +233,7 @@ footer p {
     /* position: absolute; */
     /* bottom: 0.5rem; */
     /* right: 50%; */
-    font-weight: 1000;
+    font-weight: 900;
 }
 
 .sticky-header {
@@ -230,12 +241,6 @@ footer p {
     position: sticky;
     background-color: aquamarine;
     color: black;
-}
-
-#endProgram_notif {
-    text-align: center;
-    color: rgb(52, 52, 253);
-    display: none;
 }
 
 .show {
@@ -258,11 +263,31 @@ footer p {
     color: #fff;
     padding-right: 1.2rem;
     padding-left: 1.2rem;
-    font-size: 0.7rem;
+    font-size: 0.8rem;
 }
 
 .help.show {
     transform: translateX(0);
+}
+
+.help-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.help-header h1 {
+    display: block;
+}
+
+.help-header img {
+    display: block;
+    width: 20%;
+}
+
+.help .note {
+    color: rgb(151, 245, 253);
 }
 
 .btn {
@@ -279,6 +304,108 @@ footer p {
     background-color: #222;
 }
 
-.btn:active {
+.btn:active,
+#helpBtn:active,
+#resetBtn:active {
     transform: scale(0.9);
+}
+
+#helpBtn:hover,
+#resetBtn:hover {
+    background-color: #164f57;
+}
+
+.myself {
+    color: #45f0cb;
+}
+
+.box-modal {
+    display: none;
+    text-align: center;
+    width: 30%;
+    height: 20%;
+    background-color: rgb(11, 51, 51);
+    color: white;
+    z-index: 5;
+    position: absolute;
+    top: 30%;
+    left: 35%;
+}
+
+.flex {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.box-shadow {
+    display: none;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    height: 100vh;
+    width: 100vw;
+    z-index: 3;
+}
+
+.errors,
+#assembled_successfully_container {
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.errors p,
+#assembled_successfully_container,
+p #errorLine_container p {
+    margin: 0.2rem 0.1rem !important;
+}
+
+.close-errorsBtn {
+    width: 20%;
+    cursor: pointer;
+    border: 0;
+    padding: 0.5rem 1rem;
+    color: black;
+    background-color: #45f0cb;
+    border-radius: 5px;
+    font-size: 0.7rem;
+}
+
+#endProgram_notif,
+#errorLine_container {
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.show-instruction {
+    background-color: rgb(163, 255, 240);
+    padding-left: 0.9rem;
+    padding-top: 0.9rem;
+    margin: 0 auto;
+    color: rgb(0, 54, 58);
+    font-weight: bold;
+    width: 45%;
+    height: 5rem;
+    /* text-align: right; */
+}
+
+.show-instruction p {
+    margin: 0.2rem;
+}
+
+#update_memory_alarm {
+    display: none;
+}
+
+.appear-content {
+    color: rgb(53, 255, 2);
+}
+
+#show-steps {
+    margin: 0;
 }

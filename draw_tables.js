@@ -1,5 +1,5 @@
 // create a table to show instructions:
-const row_items = ['element', 'initial values', 'T0', 'T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'After Execution'];
+const row_items = ['Elements', 'Initial Values', 'T0: AR <- PC', 'T1: IR <- M[AR], PC <-PC+1', 'T2: AR <- IR[0:11]', 'T3', 'T4', 'T5', 'T6', 'After Execution'];
 const column_items = ['statements', 'IR', 'AC', 'DR', 'PC', 'AR', 'M[AR]', 'E'];
 const inst_table = document.createElement('table');
 const inst_table_container = document.querySelector('.instruction-table');
@@ -17,6 +17,7 @@ for (let i = 0; i < 10; i++) {
         if (j == 0) {
             column.innerText = row_items[i];
             column.classList.add('bold-text');
+            column.classList.add('info-column');
         }
         row.appendChild(column);
     }
@@ -49,17 +50,12 @@ for (let i = 0; i < 4097; i++) {
             column.innerText = DecToHex_address(i);
             column.classList.add('bold-text');
         }
-
-        // else if (j == 1) {
-        //     column.classList.add('second-column');
-        // }
         column.classList.add('text-center');
         row.appendChild(column);
     }
     memoryTable.appendChild(row);
 }
 memoryTable__container.appendChild(memoryTable);
-// console.log(memory_array);
 
 const table = document.querySelector('.memory-table table');
 const rows = table.getElementsByTagName('tr');
@@ -79,6 +75,7 @@ function update_memory_table(address) {
     let index = parseInt('0x' + address);
     console.log('index: ', index);
     columns[index * 3 + 2].innerText = writeHexNum(memory_table_contents[address]);
+    columns[index * 3 + 2].classList.add('appear-content');
 }
 
 function scrollToRow(number) {
