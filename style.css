@@ -14,6 +14,7 @@ button {
     text-align: center;
     color: rgb(0, 61, 98);
     margin-bottom: 0;
+    margin-top: 0.4rem;
 }
 
 #helpBtn {
@@ -167,10 +168,12 @@ button {
     font-weight: bolder;
 }
 
+
+/* 
 .button:hover,
 #assemblerBtn:hover {
     background-color: rgb(4, 153, 153);
-}
+} */
 
 .button:active {
     transform: scale(0.95);
@@ -348,10 +351,17 @@ footer p {
     z-index: 3;
 }
 
-.errors {
+.errors,
+#assembled_successfully_container {
     flex-direction: column;
     justify-content: space-evenly;
     align-items: center;
+}
+
+.errors p,
+#assembled_successfully_container,
+p #errorLine_container p {
+    margin: 0.2rem 0.1rem !important;
 }
 
 .close-errorsBtn {
@@ -394,4 +404,8 @@ footer p {
 
 .appear-content {
     color: rgb(53, 255, 2);
+}
+
+#show-steps {
+    margin: 0;
 }

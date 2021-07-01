@@ -50,9 +50,9 @@
                         <p>End of Program:)</p>
                         <p>to test another example click on RESET button</p>
                     </div>
-                    <button class="close-errorsBtn" id="endprogramBtn">Close</button>
+                    <button class="close-errorsBtn" id="endprogramBtn">OK</button>
                 </div>
-                <div class="errors box-modal">
+                <div class="box-modal errors">
                     <p id="error-line">Editor is Empty</p>
                     <button class="close-errorsBtn" id="emptyBtn">OK</button>
                 </div>
@@ -60,7 +60,12 @@
                     <p>an invalid instruction in address <span id="error_line"></span> of program </p>
                     <button class="close-errorsBtn" id="errorLineBtn">OK</button>
                 </div>
+                <div class="box-modal" id="assembled_successfully_container">
+                    <p>program assembled successfully :)</p>
+                    <button class="close-errorsBtn" id="assembled_successfully_Btn">OK</button>
+                </div>
             </div>
+            <p id="show-steps"></p>
         </div>
         <div class="memory-table">
             <p class="text-center">Memory Table</p>
