@@ -215,26 +215,32 @@ function scanEveryLine_second() {
         // if it is memory refrence:
         let target = results_contents[0];
         if (search_in_object(memory_instructions, target)) {
-            // if it is memory instruction:
-            // format: instruction label or format: instruction label I
-            let opcode; //x
-            if (results_contents.includes('I')) {
-                opcode = memory_instructions[target][1]; //x
-                console.log(opcode);
+            if (!search_in_object(labels_table, results_contents[1])) {
+                errorLine_container.style.display = 'flex';
+                boxShadow.classList.add('show');
+                errorLine.innerText = LC;
             } else {
-                opcode = memory_instructions[target][0]; //x
-                console.log(opcode);
+                // if it is memory instruction:
+                // format: instruction label or format: instruction label I
+                let opcode; //x
+                if (results_contents.includes('I')) {
+                    opcode = memory_instructions[target][1]; //x
+                    console.log(opcode);
+                } else {
+                    opcode = memory_instructions[target][0]; //x
+                    console.log(opcode);
+                }
+                let address;
+                let variable = results_contents[1];
+                console.log(variable);
+                address = labels_table[variable]; //xxx
+                let full_address = opcode.toString() + address.toString();
+                console.log(opcode, address, full_address);
+                memory_table_contents[LC] = full_address;
+                LC = addHexNumbers(LC, '1');
+                console.log("lc: ", LC);
+                numberOfAddress++;
             }
-            let address;
-            let variable = results_contents[1];
-            console.log(variable);
-            address = labels_table[variable]; //xxx
-            let full_address = opcode.toString() + address.toString();
-            console.log(opcode, address, full_address);
-            memory_table_contents[LC] = full_address;
-            LC = addHexNumbers(LC, '1');
-            console.log("lc: ", LC);
-            numberOfAddress++;
 
         } else if (search_in_object(register_instructions, target)) {
             let opcode = register_instructions[target];
@@ -374,7 +380,6 @@ function start_assemble() {
         console.log('error line: ', errorLine);
         if (errorLine.innerText == '') {
             console.log(labels_table);
-            console.log(memory_table_address);
             console.log(memory_table_contents);
             updateContentsColumn();
             assemblerBtn.disabled = true;
