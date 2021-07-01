@@ -72,7 +72,11 @@ let editor_contents;
 let results;
 let results_index = 0;
 let operations_line = 0;
-let instructions_arr = [];
+
+const errorLine = document.getElementById('error_line');
+const errorLineBtn = document.getElementById('errorLineBtn');
+const errorLine_container = document.getElementById('errorLine_container');
+// let instructions_arr = [];
 // firt level of simulations:
 
 // line counter
@@ -80,12 +84,16 @@ let LC = '0x0';
 
 // in this function we calculate label_table and check every line of codes in editor
 function firstStep() {
+    LC = '0x0';
+    results_index = 0;
     for (let i = 0; i < results.length; i++) {
         scanEveryLine_first();
     }
 }
 
 function secondStep() {
+    errorLine.innerText = '';
+    numberOfAddress = 0;
     LC = '0x0';
     results_index = 0;
     for (let i = 0; i < results.length; i++) {
@@ -97,11 +105,9 @@ function secondStep() {
 function scanEveryLine_first() {
     let ith_line = results[results_index]; // ith line of results in string
     let results_contents = results[results_index].split(/[ ,]+/);
-    if (!ith_line.includes(",")) {
-        //dont have label:
+    if (!ith_line.includes(",")) { //dont have label:
         if (ith_line.includes("ORG")) {
             LC = writeHexNum(results_contents[1]);
-            // LC = parseInt(results_contents[1]);
             console.log("lc: ", LC);
         } else {
             if (ith_line.includes("END")) {
@@ -125,7 +131,6 @@ function scanEveryLine_first() {
 function scanEveryLine_second() {
     let ith_line = results[results_index];
     let results_contents = results[results_index].split(/[ ,]+/);
-
     if (
         ith_line.includes("ORG") ||
         ith_line.includes("END") ||
@@ -133,7 +138,6 @@ function scanEveryLine_second() {
         ith_line.includes("DEC")
     ) {
         if (ith_line.includes("ORG")) {
-            // LC = parseInt(results_contents[1]);
             LC = writeHexNum(results_contents[1]);
             console.log("lc: ", LC);
             startAddress = LC;
@@ -146,11 +150,9 @@ function scanEveryLine_second() {
             if (results_contents[0] === 'HEX') {
                 memory_table_contents[LC] = writeHexNum(results_contents[1]);
                 console.log(memory_table_contents[LC]);
-                // memory_table_address[LC] = writeHexNum(results_contents[1]);
             } else if (results_contents[1] === 'HEX') {
                 memory_table_contents[LC] = writeHexNum(results_contents[2]);
                 console.log(memory_table_contents[LC]);
-                // memory_table_address[LC] = writeHexNum(results_contents[2]);
             }
 
             LC = addHexNumbers(LC, '1');
@@ -160,11 +162,9 @@ function scanEveryLine_second() {
             if (results_contents[0] === 'DEC') {
                 memory_table_contents[LC] = DecToHex_contents(results_contents[1]);
                 console.log(memory_table_contents[LC])
-                    // memory_table_address[LC] = DecToHex_address(results_contents[1]);
             } else if (results_contents[1] === 'DEC') {
                 memory_table_contents[LC] = DecToHex_contents(results_contents[2]);
                 console.log(memory_table_contents[LC])
-                    // memory_table_address[LC] = DecToHex_address(results_contents[2]);
             }
             LC = addHexNumbers(LC, '1');
             console.log("lc: ", LC);
@@ -197,7 +197,6 @@ function scanEveryLine_second() {
             numberOfAddress++;
 
         } else if (search_in_object(register_instructions, target)) {
-            // instructions_arr.push(target);
             let opcode = register_instructions[target];
             memory_table_contents[LC] = opcode;
             LC = addHexNumbers(LC, '1');
@@ -205,19 +204,16 @@ function scanEveryLine_second() {
             console.log("lc: ", LC);
 
         } else if (search_in_object(IO_instructions, target)) {
-            // instructions_arr.push(target);
             let opcode = IO_instructions[target];
             memory_table_contents[LC] = opcode;
             LC = addHexNumbers(LC, '1');
             numberOfAddress++;
             console.log("lc: ", LC);
         }
-        instructions_arr.push(target);
 
     } else {
         // if it is memory refrence:
         let target = results_contents[0];
-        instructions_arr.push(target);
         if (search_in_object(memory_instructions, target)) {
             // if it is memory instruction:
             // format: instruction label or format: instruction label I
@@ -256,6 +252,9 @@ function scanEveryLine_second() {
         } else {
             console.log('waaaaaaaaaaarning!!!! in line: ' + LC + ' of memory');
             console.log('instruction doesnt exist');
+            errorLine_container.style.display = 'flex';
+            boxShadow.classList.add('show');
+            errorLine.innerText = LC;
             LC = addHexNumbers(LC, '1');
             console.log("lc: ", LC);
             numberOfAddress++;
@@ -354,31 +353,54 @@ function addHexNumbers(c1, c2) {
     return hexStr;
 }
 
+const error_line = document.getElementById('error-line');
+const errors_div = document.querySelector('.errors');
+const boxShadow = document.querySelector('.box-shadow');
+const close_empty_error = document.getElementById('emptyBtn');
+
+
 function start_assemble() {
     const strings = document.getElementById("editor").value;
-    editor_contents = strings;
-    results = editor_contents.split("\n");
-    console.log(editor_contents);
-    console.log(results);
-    firstStep();
-    secondStep();
-    console.log(labels_table);
-    console.log(memory_table_address);
-    console.log(memory_table_contents);
-    updateContentsColumn();
-    assemblerBtn.disabled = true;
-    assemblerBtn.style.backgroundColor = 'rgb(4, 153, 153)';
-    instr_values['Memory'] = '0x' + binaryToHex(PC);
-    instr_values['PC'] = '0x' + binaryToHex(PC);
-    updateInstructionTable('initial');
-    enableBtn(fetchBtn);
-    enableBtn(decodeBtn);
-    enableBtn(executeBtn);
+    if (strings == "") {
+        errors_div.style.display = 'flex';
+        boxShadow.classList.add('show');
+    } else {
+        editor_contents = strings;
+        results = editor_contents.split("\n");
+        console.log(editor_contents);
+        console.log(results);
+        firstStep();
+        secondStep();
+        console.log('error line: ', errorLine);
+        if (errorLine.innerText == '') {
+            console.log(labels_table);
+            console.log(memory_table_address);
+            console.log(memory_table_contents);
+            updateContentsColumn();
+            assemblerBtn.disabled = true;
+            assemblerBtn.style.backgroundColor = 'rgb(4, 153, 153)';
+            instr_values['Memory'] = '0x' + binaryToHex(PC);
+            instr_values['PC'] = '0x' + binaryToHex(PC);
+            updateInstructionTable('initial');
+            enableBtn(fetchBtn);
+            enableBtn(decodeBtn);
+            enableBtn(executeBtn);
+        }
+    }
 }
 
 // get contents of editor
 // click on assemble button
 assemblerBtn.addEventListener("click", start_assemble);
+close_empty_error.addEventListener('click', () => {
+    errors_div.style.display = 'none';
+    boxShadow.classList.remove('show');
+})
+
+errorLineBtn.addEventListener('click', () => {
+    errorLine_container.style.display = 'none';
+    boxShadow.classList.remove('show');
+})
 
 /**
 ORG 100
@@ -441,3 +463,26 @@ BUN OR I
 TMP, HEX 0
 END
 */
+
+/**
+ 
+ORG 100
+LDA X
+BSA SH4
+STA X
+LDA Y
+BSA SH4
+STA Y
+HLT
+X, HEX 1234
+Y, HEX 4321
+SH4, HEX 0
+CIL
+CIL
+CIL
+CIL
+AND MSK
+BUN SH4 I
+MSK, HEX FFF0
+END
+ */
