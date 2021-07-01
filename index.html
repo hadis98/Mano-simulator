@@ -15,6 +15,7 @@
 </head>
 
 <body>
+    <div class="box-shadow"></div>
     <div class="program-info">
         <h1 class="info-header">MANO SIMULATOR</h1>
         <button id="helpBtn">Help</button>
@@ -35,14 +36,29 @@
 
             </div>
             <div class="controlUintButtons">
-                <button class="button" id="fetchBtn"><img src="images/automation.png" alt="">Fetch</button>
-                <button class="button" id="decodeBtn"><img src="images/decode.png" alt="">Decode</button>
-                <button class="button" id="executeBtn"><img src="images/execution.png" alt="">Execute</button>
+                <button class="button" id="fetchBtn" disabled><img src="images/automation.png" alt="">Fetch</button>
+                <button class="button" id="decodeBtn" disabled><img src="images/decode.png" alt="">Decode</button>
+                <button class="button" id="executeBtn" disabled><img src="images/execution.png" alt="">Execute</button>
+            </div>
+            <div class="show-instruction">
+                <p>instruction <span id="current-instruction"></span> executed</p>
+                <p id="update_memory_alarm">content <span id="content_memory"></span> has been added to address <span id="current_address"></span> of memory</p>
             </div>
             <div class="instruction-info">
-                <div id="endProgram_notif">
-                    <p>End of Program:)</p>
-                    <p>to test another example click on RESET button</p>
+                <div id="endProgram_notif" class="box-modal show-box">
+                    <div>
+                        <p>End of Program:)</p>
+                        <p>to test another example click on RESET button</p>
+                    </div>
+                    <button class="close-errorsBtn" id="endprogramBtn">Close</button>
+                </div>
+                <div class="errors box-modal">
+                    <p id="error-line">Editor is Empty</p>
+                    <button class="close-errorsBtn" id="emptyBtn">OK</button>
+                </div>
+                <div class="box-modal" id="errorLine_container">
+                    <p>an invalid instruction in address <span id="error_line"></span> of program </p>
+                    <button class="close-errorsBtn" id="errorLineBtn">OK</button>
                 </div>
             </div>
         </div>
