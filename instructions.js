@@ -403,10 +403,11 @@ const addBinary = (str1, str2, size) => {
     if (carry) {
         res.push(1);
         Cout = 1;
+
     }
     if (res.length > size) {
         console.log('******res.length in addbinary******', res.length);
-        return res.reverse().splice(size - res.length).join('');
+        return res.reverse().splice(res.length - size).join('');
     } else {
         console.log('********else of add binary****** res: ', res);
         return res.reverse().join('');
