@@ -71,9 +71,7 @@ function updateContentsColumn() {
 }
 
 function update_memory_table(address) {
-    console.log('in update memory: address: ', address);
     let index = parseInt('0x' + address);
-    console.log('index: ', index);
     columns[index * 3 + 2].innerText = writeHexNum(memory_table_contents[address]);
     columns[index * 3 + 2].classList.add('appear-content');
 }

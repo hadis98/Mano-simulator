@@ -226,15 +226,16 @@ textarea:focus {
     background-color: #d8feff;
 }
 
-footer p {
+
+/* footer p {
     font-size: 0.6rem;
     margin: 0;
     color: darkblue;
-    /* position: absolute; */
-    /* bottom: 0.5rem; */
-    /* right: 50%; */
+    position: absolute;
+    bottom: 0.5rem;
+    right: 50%;
     font-weight: 900;
-}
+} */
 
 .sticky-header {
     top: 0;
