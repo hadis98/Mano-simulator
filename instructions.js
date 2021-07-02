@@ -252,7 +252,7 @@ function execute_instruction() {
             if (AC == '1111111111111111') {
                 AC = '0000000000000000';
             } else {
-                AC = addBinary(AC, '1', 16); //T5
+                AC = addBinary(AC, DR, 16); //T5
             }
             E = Cout;
             instr_values['AC'] = '0x' + binaryToHex(AC);
@@ -405,8 +405,10 @@ const addBinary = (str1, str2, size) => {
         Cout = 1;
     }
     if (res.length > size) {
+        console.log('******res.length in addbinary******', res.length);
         return res.reverse().splice(size - res.length).join('');
     } else {
+        console.log('********else of add binary****** res: ', res);
         return res.reverse().join('');
     }
 };
