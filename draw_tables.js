@@ -29,11 +29,11 @@ inst_table_container.appendChild(inst_table);
 // create a memory table
 const memoryTable = document.createElement('table');
 const memoryTable__container = document.querySelector('.memory-table');
-for (let i = 0; i < 4097; i++) {
+for (let i = -1; i < 4097; i++) {
     let row = document.createElement('tr');
     for (let j = 0; j < 3; j++) {
         let column = document.createElement('td');
-        if (i == 0) {
+        if (i == -1) {
             if (j == 0) {
                 column.innerText = 'Decimal Addrress';
             } else if (j == 1) {
@@ -63,15 +63,15 @@ const columns = table.getElementsByTagName('td');
 
 function updateContentsColumn() {
     let counter = startAddress;
-    for (let i = parseInt('0x' + startAddress); i < parseInt('0x' + startAddress) + numberOfAddress; i++) {
+    for (let i = parseInt('0x' + startAddress) + 1; i < parseInt('0x' + startAddress) + numberOfAddress + 1; i++) {
         columns[i * 3 + 2].innerText = memory_table_contents[counter];
         counter = addHexNumbers(counter, '1');
     }
-    scrollToRow(parseInt('0x' + startAddress));
+    scrollToRow(parseInt('0x' + startAddress) + 1);
 }
 
 function update_memory_table(address) {
-    let index = parseInt('0x' + address);
+    let index = parseInt('0x' + address) + 1;
     columns[index * 3 + 2].innerText = writeHexNum(memory_table_contents[address]);
     columns[index * 3 + 2].classList.add('appear-content');
 }
