@@ -170,22 +170,28 @@ function execute_instruction() {
             updateInstructionTable('T3');
         } else { // IO
             if (operation == 5) {
+                current_instruction.innerText = 'IOF';
                 IEN = 0;
             } else if (operation == 4) {
+                current_instruction.innerText = 'ION';
                 IEN = 1;
             } else if (operation == 3) {
+                current_instruction.innerText = 'SKO';
                 if (FGO == 1) {
                     PC = addBinary(PC, '1', 12); // skip next instruction
                 }
             } else if (operation == 2) {
+                current_instruction.innerText = 'SKI';
                 if (FGI == 0) {
                     PC = addBinary(PC, '1', 12); // skip next instruction
                 }
             } else if (operation == 1) {
+                current_instruction.innerText = 'OUT';
                 OUTR = AC.substr(8, 15); //8bit low
                 FGO = 0;
             } else if (operation == 0) {
-                // AC[0-7] = INPR; ?????????
+                current_instruction.innerText = 'INP';
+                AC = AC.substr(0, 8) + INPR;
                 FGI = 0;
             }
             updateInstructionTable('T3');
