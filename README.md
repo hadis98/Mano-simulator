@@ -80,37 +80,37 @@ CH, DEC 0
 END
 ```
 1. Clicking on Assemble Button 
-    - <img width="70%" style="max-width: 900px;" src="https://i.postimg.cc/0QFp16ty/01.png"/>
+    - <img width="100%" style="max-width: 900px;" src="https://i.postimg.cc/0QFp16ty/01.png"/>
 
 2. Executing LDA instruction
-    - <img width="70%" style="max-width: 900px;" src="https://i.postimg.cc/MTQnR9Dz/02.png"/>
+    - <img width="100%" style="max-width: 900px;" src="https://i.postimg.cc/MTQnR9Dz/02.png"/>
 
 3. Executing ADD instruction
-    - <img width="70%" style="max-width: 900px;" src="https://i.postimg.cc/BbfXC2YH/03.png"/>
+    - <img width="100%" style="max-width: 900px;" src="https://i.postimg.cc/BbfXC2YH/03.png"/>
 
 4. Executing STA instruction
-    - <img width="70%" style="max-width: 900px;" src="https://i.postimg.cc/qqcgDgSY/04.png"/>
+    - <img width="100%" style="max-width: 900px;" src="https://i.postimg.cc/qqcgDgSY/04.png"/>
 
 5. Executing CLA instruction
-    - <img width="70%" style="max-width: 900px;" src="https://i.postimg.cc/zX5ybSR1/05.png"/>
+    - <img width="100%" style="max-width: 900px;" src="https://i.postimg.cc/zX5ybSR1/05.png"/>
 
 6. Executing CLI instruction
-    - <img width="70%" style="max-width: 900px;" src="https://i.postimg.cc/g0rXczLX/06.png"/>
+    - <img width="100%" style="max-width: 900px;" src="https://i.postimg.cc/g0rXczLX/06.png"/>
 
 7. Executing ADD instruction
-    - <img width="70%" style="max-width: 900px;" src="https://i.postimg.cc/QxbHp9pK/07.png"/>
+    - <img width="100%" style="max-width: 900px;" src="https://i.postimg.cc/QxbHp9pK/07.png"/>
 
 8. Executing ADD instruction
-    - <img width="70%" style="max-width: 900px;" src="https://i.postimg.cc/9Xy4QN0p/08.png"/>
+    - <img width="100%" style="max-width: 900px;" src="https://i.postimg.cc/9Xy4QN0p/08.png"/>
 
 9. Executing STA instruction
-    - <img width="70%" style="max-width: 900px;" src="https://i.postimg.cc/MG4cvC1s/09.png"/>
+    - <img width="100%" style="max-width: 900px;" src="https://i.postimg.cc/MG4cvC1s/09.png"/>
 
 10. Executing HLT instruction
-    - <img width="70%" style="max-width: 900px;" src="https://i.postimg.cc/QCDd7hCq/11.png"/>
+    - <img width="100%" style="max-width: 900px;" src="https://i.postimg.cc/QCDd7hCq/11.png"/>
 
 11. END of the program
-    - <p><img width="70%" style="max-width: 900px;" src="https://i.postimg.cc/rmxpzKVm/10.png"/></p>
+    - <p><img width="100%" style="max-width: 900px;" src="https://i.postimg.cc/rmxpzKVm/10.png"/></p>
 
 
 
