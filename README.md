@@ -119,9 +119,8 @@ END
 - You can also download or clone this repository and run it locally on your browser.
 
 ## License
-- This project is licensed under [MIT License]. 
+- [MIT](https://github.com/hadis98/Mano-simulator/blob/master/LICENSE) © [Hadis Ghafouri](https://github.com/hadis98)
 - You can use it for personal or educational purposes as long as you give credit to its author.
-
 ## Author
 * This project was created by Hadis Ghafouri as a final project for Computer Architecture course at IUT.
 * You can contact me by email at hadisghafouri@gmail.com.
